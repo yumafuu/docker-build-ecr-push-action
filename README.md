@@ -24,6 +24,7 @@ jobs:
             - uses: YumaFuu/docker-build-ecr-push-action@v1
               with:
                 aws_role_arn: arn:aws:iam::YOUR_ACCOUNT:role/YOUR_ROLE
+                aws_region: YOUR_REGION
                 context: .
                 dockerfile: path/to/Dockerfile
                 ecr_repo: sample-repo
