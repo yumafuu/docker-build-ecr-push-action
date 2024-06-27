@@ -1,0 +1,55 @@
+name: Build and Push Image to ECR
+author: YumaFuu
+
+inputs:
+  aws_role_arn:
+    required: true
+    type: string
+  aws_region:
+    required: true
+    type: string
+  ecr_repo:
+    required: true
+    type: string
+  context:
+    required: false
+    type: string
+    default: .
+  dockerfile:
+    required: false
+    type: string
+    default: Dockerfile
+  tag:
+    required: true
+    type: string
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ inputs.aws_role_arn }}
+        aws-region: ${{ inputs.aws_region }}
+
+    - name: Login to ECR
+      uses: aws-actions/amazon-ecr-login@v2
+      id: login-ecr
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build & Push Docker Image
+      uses: docker/build-push-action@v5
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      with:
+        push: true
+        context: ${{ inputs.context }}
+        file: ${{ inputs.dockerfile }}
+        tags: |
+          ${{ env.ECR_REGISTRY }}/${{ inputs.ecr_repo }}:${{ inputs.tag }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
