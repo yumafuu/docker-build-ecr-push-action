@@ -1,1 +1,2 @@
-# gha-docker-bulid-ecr-push
+# docker-bulid-ecr-push-action
+
