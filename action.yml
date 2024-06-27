@@ -1,5 +1,7 @@
 name: Build and Push Image to ECR
 author: YumaFuu
+description: |
+  Build and push a Docker image to Amazon ECR with Buildx cache.
 
 inputs:
   aws_role_arn:
